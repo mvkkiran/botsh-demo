@@ -8,7 +8,7 @@ import rdflib
 from rdflib import Graph, Namespace
 # Create your views here.
 
-inputfile = r"/Users/vamseemuppavarapu/Desktop/BIM-Experiments/BIM Ontologies/botsh - dev - Duplex-Instances.ttl"
+inputfile = r"botsh-duplex.ttl"
 
 def index(request):
     return render(request,'index.html')

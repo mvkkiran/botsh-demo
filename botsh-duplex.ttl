@@ -1,0 +1,1831 @@
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix vann:     <http://purl.org/vocab/vann/> .
+@prefix voaf:     <http://purl.org/vocommons/voaf#> .
+@prefix vs:       <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix dce:      <http://purl.org/dc/elements/1.1/> .
+@prefix dbo:      <http://dbpedia.org/ontology/> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix schema: <https://schema.org/> .
+@prefix ifc: <https://standards.buildingsmart.org/IFC/DEV/IFC4/ADD2_TC1/OWL#> .
+@prefix dogont: <http://elite.polito.it/ontologies/dogont.owl#> .
+@prefix saref4bldg:	<https://saref.etsi.org/saref4bldg/> .
+@prefix th: <https://www.auto.tuwien.ac.at/downloads/thinkhome/ontology/BuildingOntology.owl#> .
+@prefix thsv: <https://www.auto.tuwien.ac.at/downloads/thinkhome/ontology/BuildingOntologySharedVocabulary.owl#> .
+@prefix brick: <https://brickschema.org/schema/1.1/Brick#> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix m3lite: <http://purl.org/iot/vocab/m3-lite#> .
+@prefix bot: <https://w3id.org/bot#> .
+@prefix fiestaiot: <http://purl.org/iot/ontology/fiesta-iot#> .
+@prefix onem2m: <https://git.onem2m.org/MAS/BaseOntology/raw/master/base_ontology.owl#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix iotlite: <http://purl.oclc.org/NET/UNIS/fiware/iot-lite#> .
+@prefix bosh: <http://purl.org/bosh#> .
+@prefix botsh: <http://purl.org/botsh#> .
+@base <http://purl.org/botsh> .
+
+@prefix rvt:	<https://example.org/rvt#> .
+@prefix inst:	<http://purl.org/botsh/p1#> .
+
+
+voaf:Vocabulary a owl:Class .
+dcterms:title a owl:AnnotationProperty .
+dcterms:description a owl:AnnotationProperty .
+dcterms:issued a owl:AnnotationProperty .
+dcterms:modified a owl:AnnotationProperty .
+dcterms:creator a owl:AnnotationProperty .
+dcterms:contributor a owl:AnnotationProperty .
+dcterms:license a owl:AnnotationProperty .
+vann:preferredNamespacePrefix a owl:AnnotationProperty .
+vann:preferredNamespaceUri a owl:AnnotationProperty .
+schema:domainIncludes a owl:AnnotationProperty .
+schema:rangeIncludes a owl:AnnotationProperty .
+vs:term_status a owl:AnnotationProperty .
+vcard:fn a owl:AnnotationProperty .
+schema:name a owl:AnnotationProperty .
+
+
+<http://purl.org/botsh> rdf:type owl:Ontology ;
+                        dcterms:created "2022-06-29" ;
+                        dcterms:creator "Ramesh Gowtham"@en ,
+                                        "Vamsee Krishna Kiran Muppavarapu"@en ;
+                        dcterms:description "Ontology extending the concepts related to Building Topology Ontology and its alignments."@en ;
+                        dcterms:modified "2022-06-29" ;
+                        dcterms:title "Building Topology Ontology for Smart Homes and Buildings (BOTSH)"@en ;
+						owl:imports 	<https://w3id.org/bot>, <http://purl.org/bosh> ;
+                        rdfs:comment "Building Topology Ontology for Smart Homes and Buildings. BOT ontology is extended and aligned. Developed as part of PhD research work."@en .
+
+#########################################################################
+## Newly defined classes mapped to BoT
+#########################################################################
+
+botsh:Zone a owl:Class ;
+owl:disjointWith
+    botsh:BuildingElement ,
+	botsh:Thing ,
+    botsh:BuildingInterface ;
+owl:equivalentClass bot:Zone .
+
+botsh:Site a owl:Class ;
+rdfs:subClassOf botsh:Zone ;
+    owl:disjointWith
+      botsh:Building ,
+      botsh:BuildingStorey ,
+      botsh:Space ;
+owl:equivalentClass bot:Site .
+
+botsh:Building a owl:Class ;
+ rdfs:subClassOf bot:Zone ;
+    owl:disjointWith
+      botsh:Site ,
+      botsh:BuildingStorey ,
+      botsh:Space ;
+owl:equivalentClass bot:Building .
+
+botsh:BuildingStorey a owl:Class ;
+rdfs:subClassOf bot:Zone ;
+    owl:disjointWith
+      botsh:Site ,
+      botsh:Building ,
+      botsh:Space ;
+owl:equivalentClass bot:Storey .
+
+botsh:Space a owl:Class;
+rdfs:subClassOf bot:Zone ;
+      owl:disjointWith
+        botsh:Site ,
+        botsh:Building ,
+        botsh:BuildingStorey ;
+owl:equivalentClass bot:Space .
+
+botsh:BuildingElement a owl:Class;
+owl:disjointWith botsh:Zone , botsh:BuildingInterface, botsh:Thing ; 
+owl:equivalentClass bot:Element .
+
+botsh:Thing a owl:Class;
+owl:disjointWith botsh:BuildingElement, botsh:Zone , botsh:BuildingInterface ; 
+owl:equivalentClass onem2m:Thing .
+
+# botsh:Device a owl:Class;
+# owl:disjointWith botsh:BuildingElement, botsh:Zone , botsh:BuildingInterface ; 
+# owl:equivalentClass bosh:Device .
+
+botsh:BuildingInterface a owl:Class;
+owl:disjointWith botsh:Zone, botsh:BuildingElement, botsh:Thing ;
+owl:equivalentClass bot:Interface .
+
+
+
+
+
+##################################
+## Object Properties
+##################################
+
+botsh:adjacentZone a owl:ObjectProperty , owl:SymmetricProperty ;
+  rdfs:domain botsh:Zone ;
+  rdfs:range botsh:Zone ;
+  schema:domainIncludes
+    botsh:Site , 
+    botsh:Building ,
+    botsh:BuildingStorey ,
+    botsh:Space ;
+  schema:rangeIncludes
+    botsh:Site , 
+    botsh:Building ,
+    botsh:BuildingStorey ,
+    botsh:Space ;
+  owl:propertyDisjointWith
+    botsh:intersectsZone ;
+  vs:term_status "stable" ;
+  rdfs:isDefinedBy botsh: .
+
+botsh:intersectsZone a owl:ObjectProperty , owl:SymmetricProperty ;
+  rdfs:domain botsh:Zone ;
+  rdfs:range botsh:Zone ;
+  schema:domainIncludes
+    botsh:Site , 
+    botsh:Building ,
+    botsh:BuildingStorey ,
+    botsh:Space ;
+  schema:rangeIncludes
+    botsh:Site , 
+    botsh:Building ,
+    botsh:BuildingStorey ,
+    botsh:Space ;
+  owl:propertyDisjointWith
+    botsh:adjacentZone ;
+  vs:term_status "stable" ;
+  rdfs:isDefinedBy botsh: .
+
+botsh:containsZone a owl:ObjectProperty , owl:TransitiveProperty ;
+  rdfs:domain botsh:Zone ;
+  rdfs:range botsh:Zone ;
+  schema:domainIncludes
+    botsh:Site , 
+    botsh:Building ,
+    botsh:BuildingStorey ,
+    botsh:Space ;
+  schema:rangeIncludes
+    botsh:Site , 
+    botsh:Building ,
+    botsh:BuildingStorey ,
+    botsh:Space ;
+  vs:term_status "stable" ;
+  rdfs:isDefinedBy botsh: .
+
+  botsh:hasBuilding a owl:ObjectProperty ;
+    rdfs:subPropertyOf botsh:containsZone ;
+    rdfs:domain botsh:Zone ;
+    schema:domainIncludes botsh:Site ;
+    rdfs:range botsh:Building ;
+    vs:term_status "stable" ;
+	rdfs:isDefinedBy botsh: .
+
+  botsh:hasStorey a owl:ObjectProperty ;
+    rdfs:subPropertyOf botsh:containsZone ;
+    rdfs:domain botsh:Zone ;
+    schema:domainIncludes botsh:Building ;
+    rdfs:range botsh:BuildingStorey ;
+	vs:term_status "stable" ;
+    rdfs:isDefinedBy botsh: .
+    
+  botsh:hasSpace a owl:ObjectProperty ;
+    rdfs:subPropertyOf botsh:containsZone ;
+    rdfs:domain botsh:Zone ;
+    schema:domainIncludes botsh:BuildingStorey ;
+    rdfs:range botsh:Space ;
+	vs:term_status "stable" ;
+    rdfs:isDefinedBy botsh: .
+   
+## Elements
+    
+botsh:hasSubElement a owl:ObjectProperty ;
+  rdfs:domain botsh:BuildingElement ;
+  rdfs:range botsh:BuildingElement ;
+  vs:term_status "stable" ;
+  rdfs:isDefinedBy botsh: .
+ 
+botsh:hasElement a owl:ObjectProperty ;
+  rdfs:domain botsh:Zone ;
+  rdfs:range botsh:BuildingElement ;
+  owl:propertyChainAxiom ( botsh:containsZone botsh:hasElement ) ;
+  vs:term_status "stable" ;
+  rdfs:isDefinedBy botsh: .
+
+
+botsh:hasThing a owl:ObjectProperty ;
+  rdfs:domain botsh:BuildingElement ;
+  rdfs:range botsh:Thing ;
+  vs:term_status "stable" ;
+  rdfs:isDefinedBy botsh: .
+
+botsh:isPartOf a owl:ObjectProperty ;
+  rdfs:domain botsh:Thing ;
+  rdfs:range botsh:BuildingElement ;
+  owl:inverseOf botsh:hasThing;
+  vs:term_status "stable" ;
+  rdfs:isDefinedBy botsh: .
+
+# botsh:hasThing a owl:ObjectProperty ;
+#   rdfs:domain botsh:Zone ;
+#   rdfs:range botsh:Thing ;
+#   owl:propertyChainAxiom ( botsh:containsZone botsh:hasThing ) ;
+#   vs:term_status "stable" ;
+#   rdfs:isDefinedBy botsh: .
+
+
+  botsh:adjacentElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf botsh:hasElement ;
+    owl:propertyDisjointWith
+      botsh:intersectingElement ;
+	vs:term_status "stable" ;
+    rdfs:isDefinedBy botsh: .
+    
+  botsh:containsElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf botsh:hasElement ;
+    owl:propertyChainAxiom  ( botsh:containsZone botsh:containsElement ) ;
+    vs:term_status "stable" ;
+	rdfs:isDefinedBy botsh: .
+
+  botsh:containsThing a owl:ObjectProperty ;
+    rdfs:subPropertyOf botsh:hasThing ;
+    vs:term_status "stable" ;
+	rdfs:isDefinedBy botsh: .
+
+ botsh:deviceMountedOn a owl:ObjectProperty ;
+    rdfs:subPropertyOf botsh:isPartOf ;
+    vs:term_status "stable" ;
+	rdfs:isDefinedBy botsh: .
+
+  botsh:intersectingElement a owl:ObjectProperty ;
+    rdfs:subPropertyOf botsh:hasElement ;
+    owl:propertyDisjointWith
+      botsh:adjacentElement ;
+    vs:term_status "stable" ;
+	rdfs:isDefinedBy botsh: .
+
+## Interfaces
+
+
+botsh:interfaceOf a owl:ObjectProperty ;
+  rdfs:domain botsh:BuildingInterface ;
+  vs:term_status "stable" ;
+  rdfs:isDefinedBy botsh: .
+
+
+
+#################################################################
+## Alignments
+#################################################################
+
+## IFCOWL4_ADD2 Alignment
+ifc:IfcSite owl:equivalentClass botsh:Site .
+ifc:IfcBuilding  owl:equivalentClass botsh:Building .
+ifc:IfcBuildingStorey  owl:equivalentClass botsh:BuildingStorey .
+ifc:IfcSpace  owl:equivalentClass botsh:Space .
+ifc:IfcElement  owl:equivalentClass botsh:BuildingElement .
+
+ifc:IfcSpatialStructureElement rdfs:subClassOf botsh:Zone .
+ifc:IfcSpatialZone rdfs:subClassOf botsh:Zone .
+
+
+
+## DogOnt Alignment
+
+#################################################################
+#    Object properties
+#################################################################
+
+dogont:contains rdfs:subPropertyOf botsh:containsElement .
+dogont:belongsTo rdfs:subPropertyOf [ owl:inverseOf botsh:hasSubElement ] .
+dogont:floorOf rdfs:subPropertyOf botsh:interfaceOf .
+dogont:ceilingOf rdfs:subPropertyOf botsh:interfaceOf .
+dogont:hasWall rdfs:subPropertyOf botsh:adjacentElement .
+dogont:hasWallOpening rdfs:subPropertyOf botsh:hasSubElement .
+
+#################################################################
+#    Classes
+#################################################################
+
+dogont:Building  owl:equivalentClass botsh:Building .
+
+## new addition
+dogont:Flat rdfs:subClassOf botsh:Building .
+dogont:BuildingThing owl:equivalentClass botsh:BuildingElement .
+
+dogont:Storey  owl:equivalentClass botsh:BuildingStorey .
+dogont:Room rdfs:subClassOf botsh:Space .
+
+## new addition
+dogont:Garage rdfs:subClassOf botsh:Space .
+dogont:Garden rdfs:subClassOf botsh:Space .
+
+botsh:Zone rdfs:subClassOf dogont:Environment .
+dogont:BuildingEnvironment rdfs:subClassOf botsh:Zone .
+dogont:Room rdfs:subClassOf botsh:Space .
+dogont:Balcony	rdfs:subClassOf botsh:Zone .
+dogont:Terrace	rdfs:subClassOf botsh:Zone .
+
+dogont:Controllable 	rdfs:subClassOf botsh:Thing .
+dogont:Device 			rdfs:subClassOf botsh:Thing .
+dogont:TechnicalSystem	rdfs:subClassOf botsh:BuildingElement .
+
+dogont:Vertical	    rdfs:subClassOf botsh:BuildingElement .
+dogont:Furniture    rdfs:subClassOf botsh:BuildingElement .
+
+dogont:Ceiling	rdfs:subClassOf botsh:BuildingInterface .
+dogont:Floor	rdfs:subClassOf botsh:BuildingInterface .
+
+
+## saref4bldg alignment
+
+#################################
+# Class alignments
+#################################
+
+saref4bldg:Building         owl:equivalentClass botsh:Building .
+saref4bldg:PhysicalObject   owl:equivalentClass botsh:BuildingElement .
+saref4bldg:Sensor           rdfs:subClassOf botsh:Thing .
+saref4bldg:Actuator         rdfs:subClassOf botsh:Thing .
+saref4bldg:BuildingSpace    owl:equivalentClass botsh:Space .
+
+#################################
+# Object property alignments
+#################################
+
+saref4bldg:hasSpace         rdfs:subPropertyOf botsh:containsZone .
+saref4bldg:contains         owl:equivalentProperty botsh:containsThing .
+
+
+## thinkhome
+
+#################################################################
+#    Classes
+#################################################################
+
+th:Campus  owl:equivalentClass botsh:Site .
+th:Building  owl:equivalentClass botsh:Building .
+th:BuildingStorey  owl:equivalentClass botsh:BuildingStorey .
+
+th:Opening rdfs:subClassOf botsh:BuildingElement .
+th:Space rdfs:subClassOf botsh:Space .
+
+th:Zone rdfs:subClassOf botsh:Zone .
+
+th:Construction rdfs:subClassOf botsh:BuildingInterface .
+th:Layer rdfs:subClassOf botsh:BuildingInterface .
+th:Material rdfs:subClassOf botsh:BuildingInterface .
+th:SpaceBoundary rdfs:subClassOf botsh:BuildingInterface .
+th:Surface rdfs:subClassOf botsh:BuildingInterface .
+
+th:Equipment rdfs:subClassOf botsh:Thing .
+
+#################################################################
+#    Object properties
+#################################################################
+
+th:containsBuilding rdfs:subPropertyOf botsh:hasBuilding .
+th:containsBuildingStorey rdfs:subPropertyOf botsh:hasStorey .
+th:containsSpace rdfs:subPropertyOf botsh:hasSpace .
+th:containsSpaceBoundary rdfs:subPropertyOf botsh:interfaceOf .
+th:containsLighting rdfs:subPropertyOf botsh:containsThing .
+th:containsHydronicLoopEquipment rdfs:subPropertyOf botsh:hasSubElement .
+th:containsAirLoopEquipment rdfs:subPropertyOf botsh:hasSubElement .
+
+
+th:hasDefinedAdjacentSpace rdfs:subPropertyOf [ owl:inverseOf botsh:adjacentZone ] .
+th:isDefinedAdjacentSurfaceOf rdfs:subPropertyOf botsh:interfaceOf .
+thsv:isEquipmentOf rdfs:subPropertyOf [ owl:inverseOf botsh:hasThing ] .
+
+
+## brick alignment
+
+#################################################################
+#    Object Properties
+#################################################################
+
+# botsh:containsZone rdfs:subPropertyOf brick:hasPart . # Usage of brick:hasPart with brick:Location
+# brick:isLocationOf rdfs:subPropertyOf botsh:containsElement . # botsh:containsElement does not have domain/ range, hence, a brick:Point will not be classified as botsh:BuildingElement. This would be wrong
+# botsh:hasSubElement rdfs:subPropertyOf brick:hasPart . # Usage of brick:hasPart with brick:Equipment
+
+# #################################################################
+# #    Classes
+# #################################################################
+
+# brick:Location rdfs:subClassOf botsh:Zone. 
+# brick:Site owl:equivalentClass botsh:Site . # Maybe equivalent as of other subclassings.
+
+# botsh:BuildingStorey owl:equivalentClass brick:Floor. # Brick equate both Storey and Floor.
+
+# brick:Building owl:equivalentClass botsh:Building.
+# brick:Space rdfs:subClassOf botsh:Space. 
+# brick:Room rdfs:subClassOf botsh:Space. 
+# brick:Basement rdfs:subClassOf botsh:Space. 
+# brick:Outside rdfs:subClassOf botsh:Space. 
+# brick:Wing rdfs:subClassOf botsh:Space. 
+# brick:Zone owl:equivalentClass botsh:Zone. 
+# brick:Equipment rdfs:subClassOf botsh:BuildingElement . # In botsh, anything other than botsh:Zone is botsh:BuildingElement
+
+
+## m3-lite alignment
+
+#################################################################
+#    Classes
+#################################################################
+m3lite:ActuatingDevice rdfs:subClassOf botsh:Thing.
+m3lite:SensingDevice rdfs:subClassOf botsh:Thing.
+m3lite:TagDevice rdfs:subClassOf botsh:Thing.
+m3lite:SoundSource rdfs:subClassOf botsh:BuildingElement.
+m3lite:Crowd rdfs:subClassOf botsh:BuildingElement.
+
+#################################################################
+#    Object Properties
+#################################################################
+m3lite:hasSoundSource rdfs:subPropertyOf botsh:hasSubElement .
+
+
+## DOLCE alignment
+
+#################################################################
+#    Classes
+#################################################################
+
+botsh:Site rdfs:subClassOf dul:PhysicalPlace .
+
+botsh:Zone rdfs:subClassOf dul:PhysicalObject .
+
+botsh:Building rdfs:subClassOf dul:DesignedArtifact .
+botsh:BuildingStorey rdfs:subClassOf dul:DesignedArtifact .
+botsh:Space rdfs:subClassOf dul:DesignedArtifact .
+botsh:BuildingElement rdfs:subClassOf dul:DesignedArtifact .
+botsh:BuildingInterface rdfs:subClassOf dul:DesignedArtifact .
+
+
+
+botsh:containsZone rdfs:subPropertyOf dul:hasPart .
+botsh:containsElement rdfs:subPropertyOf dul:hasPart .
+
+botsh:adjacentZone rdfs:subPropertyOf dul:hasCommonBoundary .
+botsh:adjacentElement rdfs:subPropertyOf dul:hasCommonBoundary .
+botsh:interfaceOf rdfs:subPropertyOf dul:hasCommonBoundary .
+
+botsh:intersectsZone rdfs:subPropertyOf dul:overlaps .
+botsh:intersectingElement rdfs:subPropertyOf dul:overlaps .
+
+
+## FIESTA IOT, onem2m, SSN and SOSA alignments
+onem2m:Device rdfs:subClassOf botsh:Thing .
+ssn:Device rdfs:subClassOf botsh:Thing .
+iotlite:Object rdfs:subClassOf botsh:Thing .
+ssn:System rdfs:subClassOf botsh:Thing .
+sosa:Sensor rdfs:subClassOf botsh:Thing .
+sosa:Actuator rdfs:subClassOf botsh:Thing .
+
+## BOSH Alignments
+
+#################################################################
+#    Classes
+#################################################################
+bosh:Appliance rdfs:subClassOf botsh:Thing .
+bosh:Control rdfs:subClassOf botsh:Thing .
+bosh:Device rdfs:subClassOf botsh:Thing .
+bosh:SecuritySystem rdfs:subClassOf botsh:Thing .
+bosh:Building owl:equivalentClass botsh:Building .
+bosh:BuildingEnvironment rdfs:subClassOf botsh:Zone .
+bosh:Surface rdfs:subClassOf botsh:BuildingElement .
+bosh:Flat rdfs:subClassOf botsh:Space .
+bosh:Room rdfs:subClassOf botsh:Space .
+bosh:Balcony rdfs:subClassOf botsh:Space .
+
+#################################################################
+#    Object Properties
+#################################################################
+bosh:contains owl:equivalentProperty botsh:containsThing .
+bosh:belongsTo rdfs:subPropertyOf [ owl:inverseOf botsh:hasSubElement ] .
+bosh:hasActuator rdfs:subPropertyOf botsh:hasThing .
+bosh:hasSensor rdfs:subPropertyOf botsh:hasThing .
+
+
+## Labels and comments
+
+botsh:Zone rdfs:comment
+        "A part of the physical world or a virtual world that is inherently botsh located in this world and has a 3D spatial extent; Sub-classes of botsh:Zone include botsh:Site, botsh:Building, botsh:BuildingStorey, or botsh:Space.  An instance of botsh:Zone can contain other botsh:Zone instances, making it possible to group or subdivide zones. An instance of botsh:Zone can be adjacent to or intersecting other botsh:Zone instances. Finally, a botsh:Zone can instantiate three relations to botsh:BuildingElement, which are either contained in (botsh:containsElement), adjacent to it (botsh:adjacentElement) or intersecting (botsh:intersectingElement)."@en .
+       
+botsh:BuildingElement rdfs:comment
+        "Constituent of a construction entity with a characteristic technical function, form or position [ISO 12006-2:2015, 3.4.7]"@en .
+
+botsh:Thing rdfs:comment "Thing is any entity that is either electronic or hydraulic. May or may not have communication capabilities. If it can communicate using digital medium, it becomes a device which is a subclass of Thing."@en .      
+
+botsh:BuildingInterface rdfs:comment
+        "A generic concept to qualify the relationship of two or more things in the world, where at least one is a building element or zone. Examples:\n    - Qualification of heat transmission between zones through one or more building elements. This includes one-dimensional (surface) heat losses from one zone to another through a single building element, a two dimensional (line) loss from one zone to another through the connection in which the two elements meet or a three dimensional (point) loss from one zone to another through the connection where three elements (typically two walls and a slab) meet. \n    - Connection of an electric device to the electric system of a building. \n    - A door between one room and another."@en .
+        
+botsh:Site rdfs:comment
+        "A part of the physical world or a virtual world that is inherently botshh located in this world and having a 3D spatial extent. It is intended to contain or contains one or more buildings."@en .
+       
+botsh:Building rdfs:comment
+        "An independent unit of the built environment with a characteristic spatial structure, intended to serve at least one function or user activity [ISO 12006-2:2013]. A botsh:Building is a part of the physical world or a virtual world that is inherently botshh located in this world and having a 3D spatial extent, is contained in a building site, and can contain one or more storeys that are vertically connected."@en .
+        
+botsh:BuildingStorey rdfs:comment
+        "A part of the physical world or a virtual world that is inherently both located in this world and having a 3D spatial extent. A botsh:BuildingStorey is contained in one or more buildings, and is intended to contain one or more spaces that are horizontally connected. Storeys of a building are connected by means of vertical connections such as elevators and stairs. A botsh:BuildingStorey encompasses both zones above and below ground, for example, a building with 21 floors above ground, one ground floor and 3 basements is equal to the sentence: A building has 25 instances of botsh:BuildingStorey."@en .
+        
+botsh:Space rdfs:comment
+        "A part of the physical world or a virtual world whose 3D spatial extent is bounded actually or theoretically, and provides for certain functions within the zone it is contained in."@en .
+        
+botsh:adjacentZone rdfs:comment
+        "Relationship between two zones that share a common interface, but do not intersect."@en .
+        
+botsh:intersectsZone rdfs:comment
+        "Relationship between two zones whose 3D extent intersect. For example, a stairwell intersects different storeys."@en .
+        
+botsh:containsZone rdfs:comment
+        "Relationship to the subzones of a major zone. A space zone could for instance be contained in a storey zone which is further contained in a building zone. botsh:containsZone is a transitive property. This implies that in the previous example a botsh:containsZone relationship holds between the space zone and the building zone."@en .
+botsh:hasBuilding rdfs:comment
+        "Relation to buildings contained in a zone. The typical domains of botsh:hasBuilding are instances of botsh:Site."@en .
+        
+botsh:hasStorey rdfs:comment
+        "Relation to storeys contained in a zone. The typical domains of botsh:hasStorey are instances of botsh:Building."@en .
+        
+botsh:hasSpace rdfs:comment
+        "Relation to spaces contained in a zone. The typical domains of botsh:hasSpace are instances of botsh:BuildingStorey or botsh:Building."@en .
+        
+botsh:hasSubElement rdfs:comment
+        "Relation between two building elements, either one element hosting another (e.g. a wall hosts a window) or a subcomposition of a building element into smaller parts (e.g. an air handling unit has as a part a fan)."@en .
+        
+botsh:hasElement rdfs:comment
+        "Links a Zone to an Element that is either contained in, adjacent to or intersecting with the Zone. The intended use of this relationship is not to be stated explicitly, but to be inferred from its sub-properties. It will, for example, allow one to query for all the doors of a building given that they have an adjacency to spaces of the building."@en .
+        
+botsh:adjacentElement rdfs:comment
+        "Relation between a zone and its adjacent building elements, bounding the zone."@en .
+       
+botsh:intersectingElement rdfs:comment
+        "Relation between a Zone and a building Element that intersects it."@en .
+        
+botsh:containsElement rdfs:comment
+        "Relation to a building element contained in a zone."@en .
+       
+botsh:interfaceOf rdfs:comment
+        "Relationship between an interface and another thing (building zone, element or owl:Thing)"@en .
+        
+    
+## Labels in multiple languages
+
+botsh:Zone rdfs:label
+        "Zone"@en .
+
+botsh:Site rdfs:label
+        "Site"@en .
+
+botsh:Building rdfs:label
+        "Building"@en .
+
+botsh:BuildingStorey rdfs:label
+        "Building Storey"@en .
+
+
+botsh:Space rdfs:label
+        "Space"@en .
+
+botsh:BuildingElement rdfs:label
+        "Building Element"@en .
+
+botsh:BuildingInterface rdfs:label
+        "Building Interface"@en .
+
+botsh:intersectsZone rdfs:label
+        "intersects zone"@en .
+
+
+botsh:adjacentZone rdfs:label
+        "adjacent zone"@en .
+
+
+botsh:containsZone rdfs:label
+        "contains zone"@en .
+
+botsh:hasBuilding rdfs:label
+        "has building"@en .
+
+
+botsh:hasStorey rdfs:label
+        "has storey"@en .
+
+
+botsh:hasSpace rdfs:label
+        "has space"@en .
+
+
+botsh:hasSubElement rdfs:label
+        "has sub-element"@en .
+
+botsh:hasElement rdfs:label
+        "has element"@en .
+botsh:hasThing rdfs:label
+        "has thing"@en .
+
+botsh:adjacentElement rdfs:label
+        "adjacent element"@en .
+
+botsh:containsElement rdfs:label
+        "contains element"@en .
+botsh:containsThing rdfs:label
+        "contains thing"@en .
+
+botsh:intersectingElement rdfs:label
+        "intersecting element"@en .
+
+
+botsh:interfaceOf rdfs:label
+        "interface of"@en .
+
+
+
+
+
+###################################################################################
+## Instances for the Duplex House in botsh format.
+###################################################################################
+
+### SITE ###
+inst:site_1 a botsh:Site ;
+	botsh:hasBuilding inst:building_1 .
+
+### BUILDING ###
+inst:building_1 a botsh:Building .
+inst:building_1 botsh:hasStorey inst:level_1xS3BCk291UvhgP2dvNMKI .
+inst:building_1 botsh:hasStorey inst:level_1xS3BCk291UvhgP2dvNMQJ .
+inst:building_1 botsh:hasStorey inst:level_1xS3BCk291UvhgP2dvNsgp .
+inst:building_1 botsh:hasStorey inst:level_1xS3BCk291UvhgP2dvNtSE .
+
+### ELEMENTS ###
+
+# WALLS
+inst:wall_1xS3BCk291UvhgP2dvNtzh
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "138062" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00021b4e" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNtzh" .
+inst:wall_1xS3BCk291UvhgP2dvNt_8
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "138157" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00021bad" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNt_8" .
+inst:wall_1xS3BCk291UvhgP2dvNt%24O
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "138237" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00021bfd" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNt$O" .
+inst:wall_1xS3BCk291UvhgP2dvNtXZ
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "138310" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00021c46" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNtXZ" .
+inst:wall_1xS3BCk291UvhgP2dvNtbz
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "138584" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00021d58" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNtbz" .
+inst:wall_1xS3BCk291UvhgP2dvNtkY
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "139143" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00021f87" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNtkY" .
+inst:wall_1xS3BCk291UvhgP2dvNtl7
+	a botsh:BuildingElement , inst:Party_Wall_-_CMU_Residential_Unit_Dimising_Wall ;
+	rvt:id "139234" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00021fe2" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNtl7" .
+inst:wall_1xS3BCk291UvhgP2dvNqHs
+	a botsh:BuildingElement , inst:Party_Wall_-_CMU_Residential_Unit_Dimising_Wall ;
+	rvt:id "139347" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00022053" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqHs" .
+inst:wall_1xS3BCk291UvhgP2dvNqHB
+	a botsh:BuildingElement , inst:Party_Wall_-_CMU_Residential_Unit_Dimising_Wall ;
+	rvt:id "139374" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-0002206e" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqHB" .
+inst:wall_1xS3BCk291UvhgP2dvNqM7
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "139682" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000221a2" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqM7" .
+inst:wall_1xS3BCk291UvhgP2dvNqOY
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "139783" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00022207" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqOY" .
+inst:wall_1xS3BCk291UvhgP2dvNqQ6
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "139939" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000222a3" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqQ6" .
+inst:wall_1xS3BCk291UvhgP2dvNq2Q
+	a botsh:BuildingElement , inst:Foundation_-_Concrete_417mm ;
+	rvt:id "140479" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000224bf" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNq2Q" .
+inst:wall_1xS3BCk291UvhgP2dvNq3D
+	a botsh:BuildingElement , inst:Foundation_-_Concrete_417mm ;
+	rvt:id "140520" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000224e8" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNq3D" .
+inst:wall_1xS3BCk291UvhgP2dvNq4l
+	a botsh:BuildingElement , inst:Foundation_-_Concrete_417mm ;
+	rvt:id "140554" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-0002250a" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNq4l" .
+inst:wall_1xS3BCk291UvhgP2dvNq4V
+	a botsh:BuildingElement , inst:Foundation_-_Concrete_417mm ;
+	rvt:id "140602" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-0002253a" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNq4V" .
+inst:wall_1xS3BCk291UvhgP2dvNq9K
+	a botsh:BuildingElement , inst:Foundation_-_Concrete_435mm ;
+	rvt:id "140913" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00022671" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNq9K" .
+inst:wall_1xS3BCk291UvhgP2dvNqAU
+	a botsh:BuildingElement , inst:Foundation_-_Concrete_435mm ;
+	rvt:id "140987" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000226bb" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqAU" .
+inst:wall_1xS3BCk291UvhgP2dvNqB%24
+	a botsh:BuildingElement , inst:Foundation_-_Concrete_435mm ;
+	rvt:id "141018" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000226da" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqB$" .
+inst:wall_1xS3BCk291UvhgP2dvNqkY
+	a botsh:BuildingElement , inst:Party_Wall_-_CMU_Residential_Unit_Dimising_Wall ;
+	rvt:id "143239" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00022f87" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqkY" .
+inst:wall_1xS3BCk291UvhgP2dvNrGN
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "143410" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00023032" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrGN" .
+inst:wall_1xS3BCk291UvhgP2dvNrHJ
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "143478" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00023076" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrHJ" .
+inst:wall_1xS3BCk291UvhgP2dvNrIB
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "143534" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000230ae" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrIB" .
+inst:wall_1xS3BCk291UvhgP2dvNrJ3
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "143590" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000230e6" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrJ3" .
+inst:wall_1xS3BCk291UvhgP2dvNrNL
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "143856" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000231f0" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrNL" .
+inst:wall_1xS3BCk291UvhgP2dvNrOK
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "143921" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00023231" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrOK" .
+inst:wall_1xS3BCk291UvhgP2dvNrPz
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "143960" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00023258" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrPz" .
+inst:wall_1xS3BCk291UvhgP2dvNrSl
+	a botsh:BuildingElement , inst:Interior_-_Plumbing_152mm_Stud ;
+	rvt:id "144138" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-0002330a" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrSl" .
+inst:wall_1xS3BCk291UvhgP2dvNrU8
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "144301" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000233ad" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrU8" .
+inst:wall_1xS3BCk291UvhgP2dvNr2Z
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "144518" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00023486" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNr2Z" .
+inst:wall_1xS3BCk291UvhgP2dvNr3l
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "144586" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000234ca" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNr3l" .
+inst:wall_1xS3BCk291UvhgP2dvNr3S
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "144633" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000234f9" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNr3S" .
+inst:wall_1xS3BCk291UvhgP2dvNr49
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "144684" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-0002352c" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNr49" .
+inst:wall_1xS3BCk291UvhgP2dvNr6g
+	a botsh:BuildingElement , inst:Interior_-_Plumbing_152mm_Stud ;
+	rvt:id "144783" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-0002358f" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNr6g" .
+inst:wall_1xS3BCk291UvhgP2dvNxPL
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "184944" ;
+	rvt:guid "2da40d62-4698-436c-a2c3-95c49bb5de4c-0002d270" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNxPL" .
+inst:wall_1xS3BCk291UvhgP2dvNxQJ
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "185014" ;
+	rvt:guid "2da40d62-4698-436c-a2c3-95c49bb5de4c-0002d2b6" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNxQJ" .
+inst:wall_1xS3BCk291UvhgP2dvNxRD
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "185064" ;
+	rvt:guid "2da40d62-4698-436c-a2c3-95c49bb5de4c-0002d2e8" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNxRD" .
+inst:wall_1xS3BCk291UvhgP2dvNxSe
+	a botsh:BuildingElement , inst:Exterior_-_Brick_on_Block ;
+	rvt:id "185101" ;
+	rvt:guid "2da40d62-4698-436c-a2c3-95c49bb5de4c-0002d30d" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNxSe" .
+inst:wall_1xS3BCk291UvhgP2dvNuQt
+	a botsh:BuildingElement , inst:Interior_-_Furring_152_mm_Stud ;
+	rvt:id "189074" ;
+	rvt:guid "2c391822-07f8-4a22-86a8-a1e574103a53-0002e292" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNuQt" .
+inst:wall_1xS3BCk291UvhgP2dvNu7e
+	a botsh:BuildingElement , inst:Interior_-_Furring_152_mm_Stud ;
+	rvt:id "189901" ;
+	rvt:guid "2c391822-07f8-4a22-86a8-a1e574103a53-0002e5cd" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNu7e" .
+inst:wall_1xS3BCk291UvhgP2dvNuAP
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "190140" ;
+	rvt:guid "2c391822-07f8-4a22-86a8-a1e574103a53-0002e6bc" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNuAP" .
+inst:wall_1xS3BCk291UvhgP2dvNuqJ
+	a botsh:BuildingElement , inst:Interior_-_Furring_152_mm_Stud ;
+	rvt:id "190774" ;
+	rvt:guid "2c391822-07f8-4a22-86a8-a1e574103a53-0002e936" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNuqJ" .
+inst:wall_1xS3BCk291UvhgP2dvNutm
+	a botsh:BuildingElement , inst:Interior_-_Furring_152_mm_Stud ;
+	rvt:id "190933" ;
+	rvt:guid "2c391822-07f8-4a22-86a8-a1e574103a53-0002e9d5" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNutm" .
+inst:wall_1xS3BCk291UvhgP2dvNvRw
+	a botsh:BuildingElement , inst:Interior_-_Furring_152_mm_Stud ;
+	rvt:id "193247" ;
+	rvt:guid "27ece05c-f06c-4dd2-9ccd-945e525b89d5-0002f2df" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNvRw" .
+inst:wall_1xS3BCk291UvhgP2dvNv9J
+	a botsh:BuildingElement , inst:Interior_-_Furring_152_mm_Stud ;
+	rvt:id "194166" ;
+	rvt:guid "27ece05c-f06c-4dd2-9ccd-945e525b89d5-0002f676" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNv9J" .
+inst:wall_1xS3BCk291UvhgP2dvNdvs
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "203347" ;
+	rvt:guid "64b7f7d3-8cfc-4277-ba33-8de2e6502424-00031a53" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNdvs" .
+inst:wall_1xS3BCk291UvhgP2dvNdZx
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "203998" ;
+	rvt:guid "64b7f7d3-8cfc-4277-ba33-8de2e6502424-00031cde" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNdZx" .
+inst:wall_1xS3BCk291UvhgP2dvNdef
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "204300" ;
+	rvt:guid "64b7f7d3-8cfc-4277-ba33-8de2e6502424-00031e0c" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNdef" .
+inst:wall_1xS3BCk291UvhgP2dvNdhe
+	a botsh:BuildingElement , inst:Interior_-_Partition_92mm_Stud ;
+	rvt:id "204493" ;
+	rvt:guid "64b7f7d3-8cfc-4277-ba33-8de2e6502424-00031ecd" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNdhe" .
+inst:wall_1xS3BCk291UvhgP2dvNZLZ
+	a botsh:BuildingElement , inst:Interior_-_Furring_38_mm_Stud ;
+	rvt:id "217414" ;
+	rvt:guid "e21226ef-c42d-4907-9a6f-46644e16769a-00035146" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNZLZ" .
+inst:wall_1xS3BCk291UvhgP2dvNZLY
+	a botsh:BuildingElement , inst:Interior_-_Furring_38_mm_Stud ;
+	rvt:id "217415" ;
+	rvt:guid "e21226ef-c42d-4907-9a6f-46644e16769a-00035147" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNZLY" .
+inst:wall_1xS3BCk291UvhgP2dvNZLj
+	a botsh:BuildingElement , inst:Interior_-_Furring_38_mm_Stud ;
+	rvt:id "217416" ;
+	rvt:guid "e21226ef-c42d-4907-9a6f-46644e16769a-00035148" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNZLj" .
+inst:wall_1xS3BCk291UvhgP2dvNZLi
+	a botsh:BuildingElement , inst:Interior_-_Furring_38_mm_Stud ;
+	rvt:id "217417" ;
+	rvt:guid "e21226ef-c42d-4907-9a6f-46644e16769a-00035149" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNZLi" .
+inst:wall_1xS3BCk291UvhgP2dvNZNC
+	a botsh:BuildingElement , inst:Interior_-_Furring_38_mm_Stud ;
+	rvt:id "217577" ;
+	rvt:guid "e21226ef-c42d-4907-9a6f-46644e16769a-000351e9" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNZNC" .
+inst:wall_1xS3BCk291UvhgP2dvNZNF
+	a botsh:BuildingElement , inst:Interior_-_Furring_38_mm_Stud ;
+	rvt:id "217578" ;
+	rvt:guid "e21226ef-c42d-4907-9a6f-46644e16769a-000351ea" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNZNF" .
+inst:wall_1xS3BCk291UvhgP2dvNZNE
+	a botsh:BuildingElement , inst:Interior_-_Furring_38_mm_Stud ;
+	rvt:id "217579" ;
+	rvt:guid "e21226ef-c42d-4907-9a6f-46644e16769a-000351eb" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNZNE" .
+inst:wall_1xS3BCk291UvhgP2dvNZN9
+	a botsh:BuildingElement , inst:Interior_-_Furring_38_mm_Stud ;
+	rvt:id "217580" ;
+	rvt:guid "e21226ef-c42d-4907-9a6f-46644e16769a-000351ec" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNZN9" .
+
+# FLOORS
+inst:floor_1xS3BCk291UvhgP2dvNqEL
+	a botsh:BuildingElement , inst:127mm_Slab_on_Grade ;
+	rvt:id "141232" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-000227b0" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqEL" .
+inst:floor_1xS3BCk291UvhgP2dvNqid
+	a botsh:BuildingElement , inst:127mm_Slab_on_Grade ;
+	rvt:id "143106" ;
+	rvt:guid "9808fd7f-dc48-478e-9217-628e833f66bf-00022f02" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNqid" .
+inst:floor_1xS3BCk291UvhgP2dvNr65
+	a botsh:BuildingElement , inst:Residential_-_Wood_Joist_with_Subflooring ;
+	rvt:id "144800" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-000235a0" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNr65" .
+inst:floor_1xS3BCk291UvhgP2dvNr7D
+	a botsh:BuildingElement , inst:Residential_-_Wood_Joist_with_Subflooring ;
+	rvt:id "144872" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-000235e8" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNr7D" .
+inst:floor_1xS3BCk291UvhgP2dvN%242W
+	a botsh:BuildingElement , inst:Finish_Floor_-_Wood ;
+	rvt:id "169093" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-00029485" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$2W" .
+inst:floor_1xS3BCk291UvhgP2dvN%2431
+	a botsh:BuildingElement , inst:Finish_Floor_-_Wood ;
+	rvt:id "169188" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-000294e4" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$31" .
+inst:floor_1xS3BCk291UvhgP2dvN%245v
+	a botsh:BuildingElement , inst:Finish_Floor_-_Wood ;
+	rvt:id "169308" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-0002955c" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$5v" .
+inst:floor_1xS3BCk291UvhgP2dvN%246l
+	a botsh:BuildingElement , inst:Finish_Floor_-_Wood ;
+	rvt:id "169354" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-0002958a" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$6l" .
+inst:floor_1xS3BCk291UvhgP2dvN%246M
+	a botsh:BuildingElement , inst:Finish_Floor_-_Wood ;
+	rvt:id "169395" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-000295b3" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$6M" .
+inst:floor_1xS3BCk291UvhgP2dvN%24B0
+	a botsh:BuildingElement , inst:Finish_Floor_-_Wood ;
+	rvt:id "169701" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-000296e5" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$B0" .
+inst:floor_1xS3BCk291UvhgP2dvN%24C9
+	a botsh:BuildingElement , inst:Finish_Floor_-_Ceramic_Tile ;
+	rvt:id "169772" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-0002972c" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$C9" .
+inst:floor_1xS3BCk291UvhgP2dvN%24El
+	a botsh:BuildingElement , inst:Finish_Floor_-_Ceramic_Tile ;
+	rvt:id "169866" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-0002978a" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$El" .
+inst:floor_1xS3BCk291UvhgP2dvN%24rL
+	a botsh:BuildingElement , inst:Finish_Floor_-_Wood ;
+	rvt:id "170352" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-00029970" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$rL" .
+inst:floor_1xS3BCk291UvhgP2dvN%24y4
+	a botsh:BuildingElement , inst:Finish_Floor_-_Ceramic_Tile ;
+	rvt:id "170785" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-00029b21" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$y4" .
+inst:floor_1xS3BCk291UvhgP2dvN%24Zx
+	a botsh:BuildingElement , inst:Finish_Floor_-_Ceramic_Tile ;
+	rvt:id "171230" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-00029cde" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$Zx" .
+inst:floor_1xS3BCk291UvhgP2dvN%24ZO
+	a botsh:BuildingElement , inst:Finish_Floor_-_Ceramic_Tile ;
+	rvt:id "171261" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-00029cfd" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$ZO" .
+inst:floor_1xS3BCk291UvhgP2dvN%24av
+	a botsh:BuildingElement , inst:Finish_Floor_-_Wood ;
+	rvt:id "171292" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-00029d1c" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$av" .
+inst:floor_1xS3BCk291UvhgP2dvN%24cH
+	a botsh:BuildingElement , inst:Finish_Floor_-_Ceramic_Tile ;
+	rvt:id "171444" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-00029db4" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$cH" .
+inst:floor_1xS3BCk291UvhgP2dvNYcU
+	a botsh:BuildingElement , inst:150mm_Exterior_Slab_on_Grade ;
+	rvt:id "216507" ;
+	rvt:guid "4c8d2570-3244-4e75-8237-a4372a43a590-00034dbb" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNYcU" .
+inst:floor_1xS3BCk291UvhgP2dvNYdD
+	a botsh:BuildingElement , inst:150mm_Exterior_Slab_on_Grade ;
+	rvt:id "216552" ;
+	rvt:guid "4c8d2570-3244-4e75-8237-a4372a43a590-00034de8" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNYdD" .
+
+# WINDOWS & DOORS
+inst:window_1xS3BCk291UvhgP2dvNrrP
+	a botsh:BuildingElement ;
+	rvt:id "145788" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-0002397c" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrrP" .
+inst:window_1xS3BCk291UvhgP2dvNrv5
+	a botsh:BuildingElement ;
+	rvt:id "146016" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00023a60" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrv5" .
+inst:door_1xS3BCk291UvhgP2dvNrY1
+	a botsh:BuildingElement ;
+	rvt:id "146596" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00023ca4" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrY1" .
+inst:door_1xS3BCk291UvhgP2dvNrZJ
+	a botsh:BuildingElement ;
+	rvt:id "146678" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00023cf6" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrZJ" .
+inst:window_1xS3BCk291UvhgP2dvNrdW
+	a botsh:BuildingElement ;
+	rvt:id "146885" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00023dc5" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrdW" .
+inst:window_1xS3BCk291UvhgP2dvNrfE
+	a botsh:BuildingElement ;
+	rvt:id "147051" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00023e6b" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNrfE" .
+inst:window_1xS3BCk291UvhgP2dvNoJ3
+	a botsh:BuildingElement ;
+	rvt:id "147686" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-000240e6" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNoJ3" .
+inst:window_1xS3BCk291UvhgP2dvNoO%24
+	a botsh:BuildingElement ;
+	rvt:id "147994" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-0002421a" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNoO$" .
+inst:window_1xS3BCk291UvhgP2dvNo1Q
+	a botsh:BuildingElement ;
+	rvt:id "148607" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-0002447f" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNo1Q" .
+inst:window_1xS3BCk291UvhgP2dvNo3N
+	a botsh:BuildingElement ;
+	rvt:id "148722" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-000244f2" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNo3N" .
+inst:window_1xS3BCk291UvhgP2dvNoCx
+	a botsh:BuildingElement ;
+	rvt:id "149278" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-0002471e" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNoCx" .
+inst:window_1xS3BCk291UvhgP2dvNom4
+	a botsh:BuildingElement ;
+	rvt:id "149537" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00024821" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNom4" .
+inst:window_1xS3BCk291UvhgP2dvNopD
+	a botsh:BuildingElement ;
+	rvt:id "149736" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-000248e8" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNopD" .
+inst:window_1xS3BCk291UvhgP2dvNos1
+	a botsh:BuildingElement ;
+	rvt:id "149924" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-000249a4" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNos1" .
+inst:door_1xS3BCk291UvhgP2dvNowu
+	a botsh:BuildingElement ;
+	rvt:id "150173" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00024a9d" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNowu" .
+inst:door_1xS3BCk291UvhgP2dvNoxK
+	a botsh:BuildingElement ;
+	rvt:id "150257" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00024af1" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNoxK" .
+inst:door_1xS3BCk291UvhgP2dvNozF
+	a botsh:BuildingElement ;
+	rvt:id "150378" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00024b6a" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNozF" .
+inst:door_1xS3BCk291UvhgP2dvNo%24h
+	a botsh:BuildingElement ;
+	rvt:id "150478" ;
+	rvt:guid "6b61ce71-1a7a-473c-8f87-4262e0bf88be-00024bce" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNo$h" .
+inst:door_1xS3BCk291UvhgP2dvNmlJ
+	a botsh:BuildingElement ;
+	rvt:id "159734" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-00026ff6" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNmlJ" .
+inst:door_1xS3BCk291UvhgP2dvNnH%24
+	a botsh:BuildingElement ;
+	rvt:id "159834" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-0002705a" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNnH$" .
+inst:door_1xS3BCk291UvhgP2dvNnLa
+	a botsh:BuildingElement ;
+	rvt:id "160065" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-00027141" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNnLa" .
+inst:door_1xS3BCk291UvhgP2dvNnNr
+	a botsh:BuildingElement ;
+	rvt:id "160208" ;
+	rvt:guid "982f59b0-f2e1-485f-8ce1-c9f61179e785-000271d0" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNnNr" .
+inst:door_1xS3BCk291UvhgP2dvN%24je
+	a botsh:BuildingElement ;
+	rvt:id "171853" ;
+	rvt:guid "7606d7eb-508f-40ce-a522-9b526ddeed4c-00029f4d" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$je" .
+inst:door_1xS3BCk291UvhgP2dvN%24lY
+	a botsh:BuildingElement ;
+	rvt:id "171975" ;
+	rvt:guid "7606d7eb-508f-40ce-a522-9b526ddeed4c-00029fc7" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvN$lY" .
+inst:window_1xS3BCk291UvhgP2dvNwHx
+	a botsh:BuildingElement ;
+	rvt:id "180318" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c05e" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNwHx" .
+inst:window_1xS3BCk291UvhgP2dvNwMI
+	a botsh:BuildingElement ;
+	rvt:id "180663" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c1b7" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNwMI" .
+inst:window_1xS3BCk291UvhgP2dvNwQb
+	a botsh:BuildingElement ;
+	rvt:id "180864" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c280" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNwQb" .
+inst:window_1xS3BCk291UvhgP2dvNwSd
+	a botsh:BuildingElement ;
+	rvt:id "180994" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c302" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNwSd" .
+inst:window_1xS3BCk291UvhgP2dvNwTD
+	a botsh:BuildingElement ;
+	rvt:id "181096" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c368" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNwTD" .
+inst:window_1xS3BCk291UvhgP2dvNw00
+	a botsh:BuildingElement ;
+	rvt:id "181285" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c425" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNw00" .
+inst:window_1xS3BCk291UvhgP2dvNw49
+	a botsh:BuildingElement ;
+	rvt:id "181548" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c52c" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNw49" .
+inst:window_1xS3BCk291UvhgP2dvNw5g
+	a botsh:BuildingElement ;
+	rvt:id "181583" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c54f" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNw5g" .
+inst:window_1xS3BCk291UvhgP2dvNwAF
+	a botsh:BuildingElement ;
+	rvt:id "181930" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c6aa" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNwAF" .
+inst:window_1xS3BCk291UvhgP2dvNwDm
+	a botsh:BuildingElement ;
+	rvt:id "182101" ;
+	rvt:guid "6f010293-ddb7-4fe4-8ffd-c144d8468fb6-0002c755" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNwDm" .
+inst:window_1xS3BCk291UvhgP2dvNxVS
+	a botsh:BuildingElement ;
+	rvt:id "185337" ;
+	rvt:guid "4ec82fcb-9118-4408-a3ae-37969a35fa74-0002d3f9" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNxVS" .
+inst:window_1xS3BCk291UvhgP2dvNx5J
+	a botsh:BuildingElement ;
+	rvt:id "185718" ;
+	rvt:guid "4ec82fcb-9118-4408-a3ae-37969a35fa74-0002d576" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNx5J" .
+inst:door_1xS3BCk291UvhgP2dvNd%24j
+	a botsh:BuildingElement ;
+	rvt:id "203720" ;
+	rvt:guid "64b7f7d3-8cfc-4277-ba33-8de2e6502424-00031bc8" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNd$j" .
+inst:door_1xS3BCk291UvhgP2dvNdad
+	a botsh:BuildingElement ;
+	rvt:id "204034" ;
+	rvt:guid "64b7f7d3-8cfc-4277-ba33-8de2e6502424-00031d02" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNdad" .
+
+### STOREYS ###
+inst:level_1xS3BCk291UvhgP2dvNMKI
+	a botsh:BuildingStorey ;
+	rvt:id "311" ;
+	rvt:guid "e3e052f9-0156-11d5-9301-0000863f27ad-00000137" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNMKI" .
+inst:level_1xS3BCk291UvhgP2dvNMQJ
+	a botsh:BuildingStorey ;
+	rvt:id "694" ;
+	rvt:guid "458c0e49-01bb-11d5-9302-0000863f27ad-000002b6" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNMQJ" .
+inst:level_1xS3BCk291UvhgP2dvNsgp
+	a botsh:BuildingStorey ;
+	rvt:id "134806" ;
+	rvt:guid "052baddb-ec77-457a-8fe9-c10a6a5858da-00020e96" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNsgp" .
+inst:level_1xS3BCk291UvhgP2dvNtSE
+	a botsh:BuildingStorey ;
+	rvt:id "135979" ;
+	rvt:guid "25950afa-f028-4e7a-9994-e1ed964bb928-0002132b" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNtSE" .
+
+### SPACES ###
+inst:room_1xS3BCk291UvhgP2dvNvkw
+	a botsh:Space ;
+	rvt:id "196511" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-0002ff9f" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNvkw" .
+inst:furnitur_1xS3BCk291UvhgP2dvN%24MS a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkw botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%24MS .
+inst:furnitur_1xS3BCk291UvhgP2dvN%24MV a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkw botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%24MV .
+inst:furnitur_1xS3BCk291UvhgP2dvN%24MU a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkw botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%24MU .
+inst:furnitur_1xS3BCk291UvhgP2dvN%24MP a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkw botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%24MP .
+inst:furnitur_1xS3BCk291UvhgP2dvN%24MO a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkw botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%24MO .
+inst:room_1xS3BCk291UvhgP2dvNvk7
+	a botsh:Space ;
+	rvt:id "196514" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-0002ffa2" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNvk7" .
+inst:casewor_1xS3BCk291UvhgP2dvNnwJ a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnwJ .
+inst:casewor_1xS3BCk291UvhgP2dvNnwI a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnwI .
+inst:casewor_1xS3BCk291UvhgP2dvNnwT a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnwT .
+inst:casewor_1xS3BCk291UvhgP2dvNnwS a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnwS .
+inst:casewor_1xS3BCk291UvhgP2dvNnwV a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnwV .
+inst:casewor_1xS3BCk291UvhgP2dvNnwU a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnwU .
+inst:casewor_1xS3BCk291UvhgP2dvNnwO a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnwO .
+inst:casewor_1xS3BCk291UvhgP2dvNnwR a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnwR .
+inst:casewor_1xS3BCk291UvhgP2dvNnwQ a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnwQ .
+inst:casewor_1xS3BCk291UvhgP2dvNnxb a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnxb .
+inst:casewor_1xS3BCk291UvhgP2dvNnxa a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnxa .
+inst:casewor_1xS3BCk291UvhgP2dvNu_C a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNu_C .
+inst:casewor_1xS3BCk291UvhgP2dvNuXW a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNuXW .
+inst:casewor_1xS3BCk291UvhgP2dvNuZb a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNuZb .
+inst:casewor_1xS3BCk291UvhgP2dvNuaz a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNuaz .
+inst:room_1xS3BCk291UvhgP2dvNvk0
+	a botsh:Space ;
+	rvt:id "196517" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-0002ffa5" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNvk0" .
+inst:casewor_1xS3BCk291UvhgP2dvNaR9 a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvk0 botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNaR9 .
+inst:room_1xS3BCk291UvhgP2dvNvkD
+	a botsh:Space ;
+	rvt:id "196520" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-0002ffa8" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNvkD" .
+inst:room_1xS3BCk291UvhgP2dvNvkK
+	a botsh:Space ;
+	rvt:id "196529" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-0002ffb1" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNvkK" .
+inst:room_1xS3BCk291UvhgP2dvNvkK botsh:adjacentElement inst:window_1xS3BCk291UvhgP2dvNx5J .
+inst:room_1xS3BCk291UvhgP2dvNvkG
+	a botsh:Space ;
+	rvt:id "196533" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-0002ffb5" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNvkG" .
+inst:casewor_1xS3BCk291UvhgP2dvNaNr a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkG botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNaNr .
+inst:casewor_1xS3BCk291UvhgP2dvNaNq a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkG botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNaNq .
+inst:room_1xS3BCk291UvhgP2dvNvkT
+	a botsh:Space ;
+	rvt:id "196536" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-0002ffb8" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNvkT" .
+inst:casewor_1xS3BCk291UvhgP2dvNmpR a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNmpR .
+inst:casewor_1xS3BCk291UvhgP2dvNmpQ a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNmpQ .
+inst:furnitur_1xS3BCk291UvhgP2dvN%240L a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%240L .
+inst:furnitur_1xS3BCk291UvhgP2dvNamv a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvNamv .
+inst:room_1xS3BCk291UvhgP2dvNvkU
+	a botsh:Space ;
+	rvt:id "196539" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-0002ffbb" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNvkU" .
+inst:casewor_1xS3BCk291UvhgP2dvNmqw a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNmqw .
+inst:casewor_1xS3BCk291UvhgP2dvNmq5 a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNmq5 .
+inst:furnitur_1xS3BCk291UvhgP2dvN%24Se a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%24Se .
+inst:furnitur_1xS3BCk291UvhgP2dvNaA3 a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvNaA3 .
+inst:room_1xS3BCk291UvhgP2dvNcNR
+	a botsh:Space ;
+	rvt:id "197118" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-000301fe" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNcNR" .
+inst:furnitur_1xS3BCk291UvhgP2dvN_bM a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcNR botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN_bM .
+inst:furnitur_1xS3BCk291UvhgP2dvN_ed a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcNR botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN_ed .
+inst:furnitur_1xS3BCk291UvhgP2dvN_g5 a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcNR botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN_g5 .
+inst:furnitur_1xS3BCk291UvhgP2dvN_h2 a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcNR botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN_h2 .
+inst:furnitur_1xS3BCk291UvhgP2dvN%24Hw a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcNR botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%24Hw .
+inst:room_1xS3BCk291UvhgP2dvNcOa
+	a botsh:Space ;
+	rvt:id "197121" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-00030201" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNcOa" .
+inst:casewor_1xS3BCk291UvhgP2dvNmcI a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNmcI .
+inst:casewor_1xS3BCk291UvhgP2dvNmex a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNmex .
+inst:casewor_1xS3BCk291UvhgP2dvNnUw a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnUw .
+inst:casewor_1xS3BCk291UvhgP2dvNnVe a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnVe .
+inst:casewor_1xS3BCk291UvhgP2dvNn6e a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNn6e .
+inst:casewor_1xS3BCk291UvhgP2dvNnDB a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnDB .
+inst:casewor_1xS3BCk291UvhgP2dvNnsJ a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnsJ .
+inst:casewor_1xS3BCk291UvhgP2dvNnsI a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnsI .
+inst:casewor_1xS3BCk291UvhgP2dvNnuY a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnuY .
+inst:casewor_1xS3BCk291UvhgP2dvNnuG a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnuG .
+inst:casewor_1xS3BCk291UvhgP2dvNnvg a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNnvg .
+inst:casewor_1xS3BCk291UvhgP2dvNugy a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNugy .
+inst:casewor_1xS3BCk291UvhgP2dvNujk a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNujk .
+inst:casewor_1xS3BCk291UvhgP2dvNulP a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNulP .
+inst:casewor_1xS3BCk291UvhgP2dvNvH7 a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNvH7 .
+inst:room_1xS3BCk291UvhgP2dvNcOX
+	a botsh:Space ;
+	rvt:id "197124" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-00030204" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNcOX" .
+inst:room_1xS3BCk291UvhgP2dvNcOY
+	a botsh:Space ;
+	rvt:id "197127" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-00030207" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNcOY" .
+inst:room_1xS3BCk291UvhgP2dvNcOe
+	a botsh:Space ;
+	rvt:id "197133" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-0003020d" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNcOe" .
+inst:room_1xS3BCk291UvhgP2dvNcOe botsh:adjacentElement inst:window_1xS3BCk291UvhgP2dvNxVS .
+inst:room_1xS3BCk291UvhgP2dvNcOq
+	a botsh:Space ;
+	rvt:id "197137" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-00030211" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNcOq" .
+inst:casewor_1xS3BCk291UvhgP2dvNaIZ a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOq botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNaIZ .
+inst:casewor_1xS3BCk291UvhgP2dvNaMI a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOq botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNaMI .
+inst:room_1xS3BCk291UvhgP2dvNcOn
+	a botsh:Space ;
+	rvt:id "197140" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-00030214" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNcOn" .
+inst:casewor_1xS3BCk291UvhgP2dvNmsb a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNmsb .
+inst:casewor_1xS3BCk291UvhgP2dvNmsa a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNmsa .
+inst:furnitur_1xS3BCk291UvhgP2dvN%24Oa a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%24Oa .
+inst:furnitur_1xS3BCk291UvhgP2dvNa7k a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvNa7k .
+inst:room_1xS3BCk291UvhgP2dvNcOo
+	a botsh:Space ;
+	rvt:id "197143" ;
+	rvt:guid "0b74b3fa-1a92-405e-9ac9-d59067bce2dd-00030217" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNcOo" .
+inst:casewor_1xS3BCk291UvhgP2dvNm8r a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNm8r .
+inst:casewor_1xS3BCk291UvhgP2dvNmE2 a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:containsElement inst:casewor_1xS3BCk291UvhgP2dvNmE2 .
+inst:furnitur_1xS3BCk291UvhgP2dvN%24Vt a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvN%24Vt .
+inst:furnitur_1xS3BCk291UvhgP2dvNaDs a botsh:BuildingElement .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:containsElement inst:furnitur_1xS3BCk291UvhgP2dvNaDs .
+inst:room_1xS3BCk291UvhgP2dvNdjF
+	a botsh:Space ;
+	rvt:id "204650" ;
+	rvt:guid "aa6e13ea-b5bc-4245-93bf-8b2355872cb5-00031f6a" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNdjF" .
+inst:room_1xS3BCk291UvhgP2dvNdjS
+	a botsh:Space ;
+	rvt:id "204665" ;
+	rvt:guid "aa6e13ea-b5bc-4245-93bf-8b2355872cb5-00031f79" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNdjS" .
+inst:room_1xS3BCk291UvhgP2dvNb9h
+	a botsh:Space ;
+	rvt:id "210510" ;
+	rvt:guid "40c2d70d-8d3b-49a9-9702-6756a4ed76b3-0003364e" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNb9h" .
+inst:room_1xS3BCk291UvhgP2dvNbEa
+	a botsh:Space ;
+	rvt:id "210817" ;
+	rvt:guid "40c2d70d-8d3b-49a9-9702-6756a4ed76b3-00033781" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNbEa" .
+inst:room_1xS3BCk291UvhgP2dvNbq0
+	a botsh:Space ;
+	rvt:id "211237" ;
+	rvt:guid "335fc1b3-63ca-474d-9c21-6d5abbdb0485-00033925" ;
+	rvt:ifcguid "1xS3BCk291UvhgP2dvNbq0" .
+
+### RELATIONSHIPS ###
+
+# WINDOWS AND DOORS HOSTED IN A WALL
+inst:wall_1xS3BCk291UvhgP2dvNtzh botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNrrP .
+inst:wall_1xS3BCk291UvhgP2dvNt%24O botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNrv5 .
+inst:wall_1xS3BCk291UvhgP2dvNt_8 botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNrY1 .
+inst:wall_1xS3BCk291UvhgP2dvNtXZ botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNrZJ .
+inst:wall_1xS3BCk291UvhgP2dvNt_8 botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNrdW .
+inst:wall_1xS3BCk291UvhgP2dvNtXZ botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNrfE .
+inst:wall_1xS3BCk291UvhgP2dvNrGN botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNoJ3 .
+inst:wall_1xS3BCk291UvhgP2dvNrGN botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNoO%24 .
+inst:wall_1xS3BCk291UvhgP2dvNrGN botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNo1Q .
+inst:wall_1xS3BCk291UvhgP2dvNrGN botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNo3N .
+inst:wall_1xS3BCk291UvhgP2dvNrIB botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNoCx .
+inst:wall_1xS3BCk291UvhgP2dvNrIB botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNom4 .
+inst:wall_1xS3BCk291UvhgP2dvNrIB botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNopD .
+inst:wall_1xS3BCk291UvhgP2dvNrIB botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNos1 .
+inst:wall_1xS3BCk291UvhgP2dvNqM7 botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNowu .
+inst:wall_1xS3BCk291UvhgP2dvNtkY botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNoxK .
+inst:wall_1xS3BCk291UvhgP2dvNrNL botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNozF .
+inst:wall_1xS3BCk291UvhgP2dvNr2Z botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNo%24h .
+inst:wall_1xS3BCk291UvhgP2dvNrPz botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNmlJ .
+inst:wall_1xS3BCk291UvhgP2dvNr3S botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNnH%24 .
+inst:wall_1xS3BCk291UvhgP2dvNrOK botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNnLa .
+inst:wall_1xS3BCk291UvhgP2dvNr3l botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNnNr .
+inst:wall_1xS3BCk291UvhgP2dvNtzh botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvN%24je .
+inst:wall_1xS3BCk291UvhgP2dvNt%24O botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvN%24lY .
+inst:wall_1xS3BCk291UvhgP2dvNrJ3 botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNwHx .
+inst:wall_1xS3BCk291UvhgP2dvNrJ3 botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNwMI .
+inst:wall_1xS3BCk291UvhgP2dvNrJ3 botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNwQb .
+inst:wall_1xS3BCk291UvhgP2dvNrJ3 botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNwSd .
+inst:wall_1xS3BCk291UvhgP2dvNrHJ botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNwTD .
+inst:wall_1xS3BCk291UvhgP2dvNrHJ botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNw00 .
+inst:wall_1xS3BCk291UvhgP2dvNrHJ botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNw49 .
+inst:wall_1xS3BCk291UvhgP2dvNrHJ botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNw5g .
+inst:wall_1xS3BCk291UvhgP2dvNrHJ botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNwAF .
+inst:wall_1xS3BCk291UvhgP2dvNrJ3 botsh:hasSubElement inst:window_1xS3BCk291UvhgP2dvNwDm .
+inst:wall_1xS3BCk291UvhgP2dvNdvs botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNd%24j .
+inst:wall_1xS3BCk291UvhgP2dvNdZx botsh:hasSubElement inst:door_1xS3BCk291UvhgP2dvNdad .
+
+# ROOMS AT EACH STOREY
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNvkw .
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNvk7 .
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNvk0 .
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNvkD .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNvkK .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNvkG .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNvkT .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNvkU .
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNcNR .
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNcOa .
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNcOX .
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNcOY .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNcOe .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNcOq .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNcOn .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNcOo .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNdjF .
+inst:level_1xS3BCk291UvhgP2dvNMQJ botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNdjS .
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNb9h .
+inst:level_1xS3BCk291UvhgP2dvNMKI botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNbEa .
+inst:level_1xS3BCk291UvhgP2dvNtSE botsh:hasSpace inst:room_1xS3BCk291UvhgP2dvNbq0 .
+
+# ELEMENTS ADJACENT TO ROOMS
+inst:room_1xS3BCk291UvhgP2dvNvkw botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNt%24O .
+inst:room_1xS3BCk291UvhgP2dvNvkw botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqQ6 .
+inst:room_1xS3BCk291UvhgP2dvNvkw botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtXZ .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtXZ .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqM7 .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqOY .
+inst:room_1xS3BCk291UvhgP2dvNvk7 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNutm .
+inst:room_1xS3BCk291UvhgP2dvNvk0 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtl7 .
+inst:room_1xS3BCk291UvhgP2dvNvk0 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNuqJ .
+inst:room_1xS3BCk291UvhgP2dvNvk0 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqOY .
+inst:room_1xS3BCk291UvhgP2dvNvk0 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqM7 .
+inst:room_1xS3BCk291UvhgP2dvNvkD botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNt_8 .
+inst:room_1xS3BCk291UvhgP2dvNvkD botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtl7 .
+inst:room_1xS3BCk291UvhgP2dvNvkD botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqM7 .
+inst:room_1xS3BCk291UvhgP2dvNvkD botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqM7 .
+inst:room_1xS3BCk291UvhgP2dvNvkD botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqQ6 .
+inst:room_1xS3BCk291UvhgP2dvNvkD botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNt%24O .
+inst:room_1xS3BCk291UvhgP2dvNvkK botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrHJ .
+inst:room_1xS3BCk291UvhgP2dvNvkK botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3S .
+inst:room_1xS3BCk291UvhgP2dvNvkK botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3l .
+inst:room_1xS3BCk291UvhgP2dvNvkK botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3l .
+inst:room_1xS3BCk291UvhgP2dvNvkK botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3l .
+inst:room_1xS3BCk291UvhgP2dvNvkK botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3l .
+inst:room_1xS3BCk291UvhgP2dvNvkK botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr2Z .
+inst:room_1xS3BCk291UvhgP2dvNvkG botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3l .
+inst:room_1xS3BCk291UvhgP2dvNvkG botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNdZx .
+inst:room_1xS3BCk291UvhgP2dvNvkG botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNvRw .
+inst:room_1xS3BCk291UvhgP2dvNvkG botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr6g .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqkY .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrIB .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrHJ .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr2Z .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr2Z .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3l .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr6g .
+inst:room_1xS3BCk291UvhgP2dvNvkT botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr6g .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqkY .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr49 .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr49 .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3l .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3S .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrHJ .
+inst:room_1xS3BCk291UvhgP2dvNvkU botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrGN .
+inst:room_1xS3BCk291UvhgP2dvNcNR botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtzh .
+inst:room_1xS3BCk291UvhgP2dvNcNR botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtbz .
+inst:room_1xS3BCk291UvhgP2dvNcNR botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNt_8 .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNt_8 .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtkY .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNuAP .
+inst:room_1xS3BCk291UvhgP2dvNcOa botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNuQt .
+inst:room_1xS3BCk291UvhgP2dvNcOX botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtkY .
+inst:room_1xS3BCk291UvhgP2dvNcOX botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqHs .
+inst:room_1xS3BCk291UvhgP2dvNcOX botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNu7e .
+inst:room_1xS3BCk291UvhgP2dvNcOX botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNuAP .
+inst:room_1xS3BCk291UvhgP2dvNcOY botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtzh .
+inst:room_1xS3BCk291UvhgP2dvNcOY botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtXZ .
+inst:room_1xS3BCk291UvhgP2dvNcOY botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqHs .
+inst:room_1xS3BCk291UvhgP2dvNcOY botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtkY .
+inst:room_1xS3BCk291UvhgP2dvNcOY botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtkY .
+inst:room_1xS3BCk291UvhgP2dvNcOY botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtbz .
+inst:room_1xS3BCk291UvhgP2dvNcOe botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrJ3 .
+inst:room_1xS3BCk291UvhgP2dvNcOe botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrPz .
+inst:room_1xS3BCk291UvhgP2dvNcOe botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrOK .
+inst:room_1xS3BCk291UvhgP2dvNcOe botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrOK .
+inst:room_1xS3BCk291UvhgP2dvNcOe botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrOK .
+inst:room_1xS3BCk291UvhgP2dvNcOe botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrOK .
+inst:room_1xS3BCk291UvhgP2dvNcOe botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrNL .
+inst:room_1xS3BCk291UvhgP2dvNcOq botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrOK .
+inst:room_1xS3BCk291UvhgP2dvNcOq botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNdvs .
+inst:room_1xS3BCk291UvhgP2dvNcOq botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNv9J .
+inst:room_1xS3BCk291UvhgP2dvNcOq botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrSl .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqkY .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrGN .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrJ3 .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrNL .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrNL .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrOK .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrSl .
+inst:room_1xS3BCk291UvhgP2dvNcOn botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrSl .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqkY .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrU8 .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrU8 .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrOK .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrPz .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrJ3 .
+inst:room_1xS3BCk291UvhgP2dvNcOo botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrIB .
+inst:room_1xS3BCk291UvhgP2dvNdjF botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr3l .
+inst:room_1xS3BCk291UvhgP2dvNdjF botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNr49 .
+inst:room_1xS3BCk291UvhgP2dvNdjF botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNvRw .
+inst:room_1xS3BCk291UvhgP2dvNdjF botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNdZx .
+inst:room_1xS3BCk291UvhgP2dvNdjS botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrOK .
+inst:room_1xS3BCk291UvhgP2dvNdjS botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNrU8 .
+inst:room_1xS3BCk291UvhgP2dvNdjS botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNv9J .
+inst:room_1xS3BCk291UvhgP2dvNdjS botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNdvs .
+inst:room_1xS3BCk291UvhgP2dvNb9h botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNt_8 .
+inst:room_1xS3BCk291UvhgP2dvNb9h botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtl7 .
+inst:room_1xS3BCk291UvhgP2dvNbEa botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNtXZ .
+inst:room_1xS3BCk291UvhgP2dvNbEa botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNqHs .
+inst:room_1xS3BCk291UvhgP2dvNbq0 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNxPL .
+inst:room_1xS3BCk291UvhgP2dvNbq0 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNxSe .
+inst:room_1xS3BCk291UvhgP2dvNbq0 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNxRD .
+inst:room_1xS3BCk291UvhgP2dvNbq0 botsh:adjacentElement inst:wall_1xS3BCk291UvhgP2dvNxQJ .
+
+
+##########################################################
+
+## Sensor instances...
+
+##########################################################
+
+## temperature sensors in each room (BOTSH:Space)
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkw a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvk7 a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvk0 a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkD a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcNR a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcOa a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcOX a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcOY a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNb9h a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNbEa a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkK a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkG a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkT a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkU a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcOe a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcOq a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcOn a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcOo a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNdjF a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNdjS a bosh:TemperatureSensor .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNbq0 a bosh:TemperatureSensor .
+
+## Alarms at each level of building
+inst:alarm_level_1xS3BCk291UvhgP2dvNMKI a bosh:Alarm .
+inst:alarm_level_1xS3BCk291UvhgP2dvNMQJ a botsh:Alarm .
+inst:alarm_level_1xS3BCk291UvhgP2dvNsgp a bosh:Alarm .
+inst:alarm_level_1xS3BCk291UvhgP2dvNtSE a botsh:Alarm .
+
+
+## Smoke sensor
+
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkw a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvk7 a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvk0 a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkD a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcNR a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcOa a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcOX a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcOY a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNb9h a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNbEa a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkK a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkG a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkT a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkU a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcOe a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcOq a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcOn a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcOo a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNdjF a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNdjS a bosh:SmokeDetector .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNbq0 a bosh:SmokeDetector .
+
+
+## Motion Sensors
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkw a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvk7 a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvk0 a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkD a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcNR a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOa a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOX a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOY a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNb9h a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNbEa a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkK a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkG a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkT a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkU a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOe a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOq a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOn a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOo a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNdjF a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNdjS a bosh:MotionSensor .
+inst:PIR_room_1xS3BCk291UvhgP2dvNbq0 a bosh:MotionSensor .
+
+## Door Sensors
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvkw a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvk7 a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvk0 a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvkD a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcNR a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOa a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOX a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOY a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNb9h a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNbEa a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvkK a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvkG a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvkT a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvkU a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOe a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOq a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOn a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOo a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNdjF a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNdjS a bosh:DoorStateSensor .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNbq0 a bosh:DoorStateSensor .
+
+
+## assigning sensors to the building elements.
+inst:wall_1xS3BCk291UvhgP2dvNqQ6 botsh:containsThing inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkw .
+inst:wall_1xS3BCk291UvhgP2dvNtXZ botsh:containsThing inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkD.
+inst:wall_1xS3BCk291UvhgP2dvNqQ6 botsh:containsThing inst:PIR_room_1xS3BCk291UvhgP2dvNvkw .
+inst:wall_1xS3BCk291UvhgP2dvNtXZ botsh:containsThing inst:MQ2_room_1xS3BCk291UvhgP2dvNvkw .
+
+
+## defining the properties for each sensor
+
+#defining properties for Temperature Sensor
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkw bosh:hasUniqueID "DHT_11_room_1xS3BCk291UvhgP2dvNvkw"^^xsd:string .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkw bosh:hasDescription " Measures temperature from Room S3BCk291UvhgP2dvNvkw and sends the data to thinkcloud for processing."^^xsd:string .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkw bosh:measuresQuantity inst:Temperature_room_1xS3BCk291UvhgP2dvNvkw .
+inst:Temperature_room_1xS3BCk291UvhgP2dvNvkw a bosh:Temperature .
+	# bosh:Temperature is a subclass of QuantityKind
+inst:Temperature_room_1xS3BCk291UvhgP2dvNvkw bosh:hasValue "38"^^xsd:string .
+inst:Temperature_room_1xS3BCk291UvhgP2dvNvkw bosh:hasUnitOfMeasure inst:TemperatureUnit_room_1xS3BCk291UvhgP2dvNvkw .
+inst:TemperatureUnit_room_1xS3BCk291UvhgP2dvNvkw a bosh:DegreeCelsius .
+inst:TemperatureUnit_room_1xS3BCk291UvhgP2dvNvkw bosh:hasUnitValue "Degree Celsius"^^xsd:string .
+
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkD bosh:hasUniqueID "DHT_11_room_1xS3BCk291UvhgP2dvNvkD"^^xsd:string .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkD bosh:hasDescription " Measures temperature from Room S3BCk291UvhgP2dvNvkw and sends the data to thinkcloud for processing."^^xsd:string .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkD bosh:measuresQuantity inst:Temperature_room_1xS3BCk291UvhgP2dvNvkD .
+inst:Temperature_room_1xS3BCk291UvhgP2dvNvkw a bosh:Temperature .
+	# bosh:Temperature is a subclass of QuantityKind
+inst:Temperature_room_1xS3BCk291UvhgP2dvNvkD bosh:hasValue "35"^^xsd:string .
+inst:Temperature_room_1xS3BCk291UvhgP2dvNvkD bosh:hasUnitOfMeasure inst:TemperatureUnit_room_1xS3BCk291UvhgP2dvNvkD .
+inst:TemperatureUnit_room_1xS3BCk291UvhgP2dvNvkD a bosh:DegreeCelsius .
+inst:TemperatureUnit_room_1xS3BCk291UvhgP2dvNvkD bosh:hasUnitValue "Degree Celsius"^^xsd:string .
+
+#defining properties for Motion Sensor
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkw bosh:hasUniqueID "PIR_room_1xS3BCk291UvhgP2dvNvkw"^^xsd:string .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkw bosh:hasDescription " Detects presence of persons from Room S3BCk291UvhgP2dvNvkw and sends the data to thinkcloud for processing."^^xsd:string .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkw bosh:measuresQuantity inst:Presence_room_1xS3BCk291UvhgP2dvNvkw .
+inst:Presence_room_1xS3BCk291UvhgP2dvNvkw a bosh:Presence .
+	#Presence is a boolean string takes either True of False.
+inst:Presence_room_1xS3BCk291UvhgP2dvNvkw bosh:hasValue "True"^^xsd:string .
+
+
+#defining properties for Smoke Sensor
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkw bosh:hasUniqueID "MQ2_room_1xS3BCk291UvhgP2dvNvkw"^^xsd:string .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkw bosh:hasDescription " Measures smoke from Room S3BCk291UvhgP2dvNvkw and sends the data to thinkcloud for processing."^^xsd:string .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkw bosh:measuresQuantity inst:Smoke_room_1xS3BCk291UvhgP2dvNvkw .
+inst:Smoke_room_1xS3BCk291UvhgP2dvNvkw a bosh:Voltage .
+# MQ2 sensor, outputs 0 V if the air is clean and 5 V for smoke.
+inst:Smoke_room_1xS3BCk291UvhgP2dvNvkw bosh:hasValue "5"^^xsd:string .
+inst:Smoke_room_1xS3BCk291UvhgP2dvNvkw bosh:hasUnitOfMeasure inst:SmokeUnit_room_1xS3BCk291UvhgP2dvNvkw .
+inst:SmokeUnit_room_1xS3BCk291UvhgP2dvNvkw a bosh:Volt .
+inst:SmokeUnit_room_1xS3BCk291UvhgP2dvNvkw bosh:hasUnitValue "Volts"^^xsd:string .
+
+#defining properties for actuator Alarm
+inst:alarm_level_1xS3BCk291UvhgP2dvNMKI bosh:hasUniqueID "alarm_level_1xS3BCk291UvhgP2dvNMKI"^^xsd:string .
+inst:alarm_level_1xS3BCk291UvhgP2dvNMKI bosh:hasDescription "Gives a siren alarm when there is an emergency situation."^^xsd:string .
+inst:alarm_level_1xS3BCk291UvhgP2dvNMKI bosh:hasState inst:alarmstate_room_1xS3BCk291UvhgP2dvNvkw .
+inst:alarmstate_room_1xS3BCk291UvhgP2dvNvkw a bosh:StartStopState .
+inst:alarmstate_room_1xS3BCk291UvhgP2dvNvkw bosh:hasStateValue "on"^^xsd:string .
