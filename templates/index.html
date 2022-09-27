@@ -1,0 +1,121 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>BOTSH - Demo</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+<nav class="navbar navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">BOTSH - Demo Application (Duplex House)</span>
+</nav>
+<div class="row">
+    <div class="col-8">
+        <div class="jumbotron">
+            <h1>BOTSH</h1>
+            <p class="lead">Building Topology Ontology for Smart Homes (BOTSH) is an interoperable ontology.</p>
+            <a class="btn btn-lg btn-primary" href="https://github.com/mvkkiran/botsh" role="button">View GitHub
+                &raquo;</a>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="{% static 'duplex-house.jpg' %}" , alt="Duplex house image">
+            <div class="card-body">
+                <p class="card-text">Duplex house is a simple open BIM model.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="row card-deck mb-3 text-center">
+
+        <div class="col-4 card mb-4 box-shadow">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Competency Questions</h4>
+            </div>
+            <div class="card-body">
+                <form action="/runquery/" method="post">{% csrf_token %}
+                <select class="custom-select custom-select-sm mb-3" id="questionsbox" name="questionsbox">
+                    <option selected>Select the query</option>
+                    <option value="1">CQ1 - What are the different spaces present in the building?</option>
+                    <option value="2">CQ2 - What are the tangible building elements and sub elements present in the
+                        building?
+                    </option>
+                    <option value="3">CQ3 - What are the adjacent and intersecting elements within the building?
+                    </option>
+                    <option value="4">CQ4 - What are all the different types of sensors present within the building?
+                    </option>
+                    <option value="5">CQ5 - What are the room temperatures pertaining to a particular storey of the
+                        building?
+                    </option>
+
+                </select>
+                    <input class="btn btn-md btn-success" type="submit" value="Run Query">
+                <!--<a class="btn btn-md btn-success" href="/runquery">Run Query</a>-->
+                    </form>
+            </div>
+        </div>
+        <div class="col-8 card mb-4 box-shadow">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">SPARQL results</h4>
+            </div>
+            <div class="card-body">
+
+                <table class="table table-responsive table-sm table-striped">
+                    <thead>
+                    <tr>
+                        {% for key, value in df_dict.items %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for rec in df_rec %}
+                        <tr>
+                            {% for i2, k2 in rec.items %}
+                                <td>{{ k2 }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="pt-4 my-md-5 pt-md-5 border-top">
+
+    </footer>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>
