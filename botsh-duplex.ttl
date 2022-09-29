@@ -56,7 +56,7 @@ schema:name a owl:AnnotationProperty .
                         dcterms:description "Ontology extending the concepts related to Building Topology Ontology and its alignments."@en ;
                         dcterms:modified "2022-06-29" ;
                         dcterms:title "Building Topology Ontology for Smart Homes and Buildings (BOTSH)"@en ;
-						owl:imports 	<https://w3id.org/bot>, <http://purl.org/bosh> ;
+						#owl:imports 	<https://w3id.org/bot>, <http://purl.org/bosh> ;
                         rdfs:comment "Building Topology Ontology for Smart Homes and Buildings. BOT ontology is extended and aligned. Developed as part of PhD research work."@en .
 
 #########################################################################
@@ -1771,6 +1771,40 @@ inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOo a bosh:DoorStateSensor .
 inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNdjF a bosh:DoorStateSensor .
 inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNdjS a bosh:DoorStateSensor .
 inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNbq0 a bosh:DoorStateSensor .
+
+
+
+
+
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkw a botsh:Thing , bosh:SensingDevice .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvk7 a botsh:Thing , bosh:SensingDevice .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvk0 a botsh:Thing , bosh:SensingDevice .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNvkD a botsh:Thing , bosh:SensingDevice .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcNR a botsh:Thing , bosh:SensingDevice .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcOa a botsh:Thing , bosh:SensingDevice .
+inst:DHT_11_room_1xS3BCk291UvhgP2dvNcOX a botsh:Thing , bosh:SensingDevice .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkw a botsh:Thing , bosh:SensingDevice .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvk7 a botsh:Thing , bosh:SensingDevice .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvk0 a botsh:Thing , bosh:SensingDevice .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNvkD a botsh:Thing , bosh:SensingDevice .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcNR a botsh:Thing , bosh:SensingDevice .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcOa a botsh:Thing , bosh:SensingDevice .
+inst:MQ2_room_1xS3BCk291UvhgP2dvNcOX a botsh:Thing , bosh:SensingDevice .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkw a botsh:Thing , bosh:SensingDevice .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvk7 a botsh:Thing , bosh:SensingDevice .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvk0 a botsh:Thing , bosh:SensingDevice .
+inst:PIR_room_1xS3BCk291UvhgP2dvNvkD a botsh:Thing , bosh:SensingDevice .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcNR a botsh:Thing , bosh:SensingDevice .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOa a botsh:Thing , bosh:SensingDevice .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOX a botsh:Thing , bosh:SensingDevice .
+inst:PIR_room_1xS3BCk291UvhgP2dvNcOY a botsh:Thing , bosh:SensingDevice .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvkw a botsh:Thing , bosh:SensingDevice .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvk7 a botsh:Thing , bosh:SensingDevice .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvk0 a botsh:Thing , bosh:SensingDevice .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNvkD a botsh:Thing , bosh:SensingDevice .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcNR a botsh:Thing , bosh:SensingDevice .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOa a botsh:Thing , bosh:SensingDevice .
+inst:ReedSwitch_room_1xS3BCk291UvhgP2dvNcOX a botsh:Thing , bosh:SensingDevice .
 
 
 ## assigning sensors to the building elements.

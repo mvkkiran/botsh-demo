@@ -8,7 +8,13 @@ import rdflib
 from rdflib import Graph, Namespace
 # Create your views here.
 
+
 inputfile = r"botsh-duplex.ttl"
+boshinputfile = r"BOSH-SmartHomeBuildingOntology.ttl"
+
+#production file path
+#inputfile = r"/home/botsh/botsh_demo/botsh-duplex.ttl"
+#boshinputfile = r"/home/botsh/botsh_demo/BOSH-SmartHomeBuildingOntology.ttl"
 
 def index(request):
     return render(request,'index.html')
@@ -52,14 +58,21 @@ limit 100
             PREFIX bosh: <http://purl.org/bosh#>
         select ?storey ?space ?element ?thing ?value ?unit where { 
     ?storey a botsh:BuildingStorey. ?storey botsh:hasSpace ?space. 
-?space botsh:hasElement ?element. ?element botsh:hasThing ?thing. 
+?space botsh:adjacentElement ?element. ?element botsh:containsThing ?thing. 
 ?thing a bosh:TemperatureSensor. ?thing bosh:measuresQuantity ?q. ?q bosh:hasValue ?value. ?q bosh:hasUnitOfMeasure ?u. ?u bosh:hasUnitValue ?unit. filter(?storey=<http://purl.org/botsh/p1#level_1xS3BCk291UvhgP2dvNMKI>)} 
     limit 100
             """
 
     queryselection = {'1':query1, '2':query2,'3':query3, '4':query4, '5':query5}
+    cq = {'1': 'CQ1 - What are the different spaces present in the building?',
+             '2': 'CQ2 - What are the tangible building elements and sub elements present in the building?',
+             '3': 'CQ3 - What are the adjacent and intersecting elements within the building?',
+             '4': 'CQ4 - What are all the different types of sensors present within the building?',
+             '5': 'CQ5 - What are the room temperatures pertaining to a particular storey of the building?'
+             }
     g = rdflib.Graph()
-    g.parse(inputfile,format=rdflib.util.guess_format(inputfile))
+    g.parse(inputfile, format=rdflib.util.guess_format(inputfile))
+    g.parse(boshinputfile,format=rdflib.util.guess_format(boshinputfile))
     results = g.query(queryselection[question])
     print(results)
     # for storey, space in results:
@@ -77,6 +90,8 @@ limit 100
     df = pd.DataFrame(bindings)
     context = {
         'df_dict': df.to_dict(),
-        'df_rec': df.to_dict(orient='records')
+        'df_rec': df.to_dict(orient='records'),
+        'query': queryselection[question],
+        'question': cq[question]
     }
     return render(request,'index.html', context)

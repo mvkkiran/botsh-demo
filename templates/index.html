@@ -9,36 +9,74 @@
 
     <title>BOTSH - Demo</title>
 
+
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css"></link>
+
 </head>
 
 <body>
-<nav class="navbar navbar-light bg-light">
+<nav class="navbar navbar-light bg-light fixed-top">
     <span class="navbar-brand mb-0 h1">BOTSH - Demo Application (Duplex House)</span>
 </nav>
-<div class="row">
-    <div class="col-8">
-        <div class="jumbotron">
-            <h1>BOTSH</h1>
-            <p class="lead">Building Topology Ontology for Smart Homes (BOTSH) is an interoperable ontology.</p>
-            <a class="btn btn-lg btn-primary" href="https://github.com/mvkkiran/botsh" role="button">View GitHub
-                &raquo;</a>
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="{% static 'duplex-house.jpg' %}" , alt="Duplex house image">
-            <div class="card-body">
-                <p class="card-text">Duplex house is a simple open BIM model.</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8">
+            <div class="jumbotron">
+                <h3>BOTSH</h3>
+                <p>Building Topology Ontology for Smart Homes (BOTSH) is an interoperable ontology developed based on
+                    BOT and customized specifically to the domain of smart homes. There are around 8 classes and 15
+                    properties. It is completely aligned with
+                    Smart Home and Building Ontology (BOSH) which is a domain ontology for smart homes consisting of
+                    sensors, actuators, appliances, observations and measurements.</p>
+                <p>
+                    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button"
+                       aria-expanded="false" aria-controls="collapseExample">
+                        Resources
+                    </a>
+                </p>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body bg-light">
+                        <div class="row">
+                            <div class="col-3">
+                                <a href="https://github.com/mvkkiran/botsh" role="button" target="_blank">View GitHub
+                                </a>
+                            </div>
+                            <div class="col-3">
+                                <a href="http://purl.org/botsh" role="button" target="_blank">BOTSH ontology
+                                </a>
+                            </div>
+                            <div class="col-3">
+                                <a href="http://purl.org/bosh" role="button" target="_blank">BOSH ontology
+                                </a>
+                            </div>
+                            <div class="col-3">
+                                <a href="http://purl.org/bosh/documentation" role="button" target="_blank">BOSH
+                                    documentation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="col-4" style="margin-top: 60px">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="{% static 'duplex-house.jpg' %}" , alt="Duplex house image">
+                <div class="card-body">
+                    <p class="card-text">Duplex house is a simple open BIM model of size 490 sq mts.</p>
+                </div>
+            </div>
 
+        </div>
     </div>
 </div>
 
-<div class="container">
+<div class="container-fluid">
 
     <div class="row card-deck mb-3 text-center">
 
@@ -48,24 +86,33 @@
             </div>
             <div class="card-body">
                 <form action="/runquery/" method="post">{% csrf_token %}
-                <select class="custom-select custom-select-sm mb-3" id="questionsbox" name="questionsbox">
-                    <option selected>Select the query</option>
-                    <option value="1">CQ1 - What are the different spaces present in the building?</option>
-                    <option value="2">CQ2 - What are the tangible building elements and sub elements present in the
-                        building?
-                    </option>
-                    <option value="3">CQ3 - What are the adjacent and intersecting elements within the building?
-                    </option>
-                    <option value="4">CQ4 - What are all the different types of sensors present within the building?
-                    </option>
-                    <option value="5">CQ5 - What are the room temperatures pertaining to a particular storey of the
-                        building?
-                    </option>
+                    <select class="custom-select custom-select-sm mb-3" id="questionsbox" name="questionsbox">
+                        <option selected>Select the query</option>
+                        <option value="1">CQ1 - What are the different spaces present in the building?</option>
+                        <option value="2">CQ2 - What are the tangible building elements and sub elements present in the
+                            building?
+                        </option>
+                        <option value="3">CQ3 - What are the adjacent and intersecting elements within the building?
+                        </option>
+                        <option value="4">CQ4 - What are all the different types of sensors present within the building?
+                        </option>
+                        <option value="5">CQ5 - What are the room temperatures pertaining to a particular storey of the
+                            building?
+                        </option>
 
-                </select>
+                    </select>
                     <input class="btn btn-md btn-success" type="submit" value="Run Query">
-                <!--<a class="btn btn-md btn-success" href="/runquery">Run Query</a>-->
-                    </form>
+                    <!--<a class="btn btn-md btn-success" href="/runquery">Run Query</a>-->
+                </form>
+                <br>
+                <p class="text-left" name="question">
+                    {{ question }}
+
+                </p>
+                <p class="text-left" name="query">
+                    <code>{{ query }}</code>
+
+                </p>
             </div>
         </div>
         <div class="col-8 card mb-4 box-shadow">
@@ -74,7 +121,7 @@
             </div>
             <div class="card-body">
 
-                <table class="table table-responsive table-sm table-striped">
+                <table id="results" name="results" class="table table-responsive table-sm table-striped">
                     <thead>
                     <tr>
                         {% for key, value in df_dict.items %}
@@ -101,6 +148,10 @@
 
     <footer class="pt-4 my-md-5 pt-md-5 border-top">
 
+        <div class="container">
+            <span class="text-muted">Place sticky footer content here.</span>
+        </div>
+
     </footer>
 </div>
 
@@ -108,14 +159,27 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!-- Datatables -->
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<!-- Bootstrap -->
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
         crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
         crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#results').DataTable();
+
+    });
+</script>
+
 </body>
 </html>
